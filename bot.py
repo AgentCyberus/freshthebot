@@ -1,48 +1,41 @@
 import os
-import discord
 import random
 import asyncio
+from dotenv import load_dotenv
+import discord
 from discord import Game
-from discord.ext.commands import Bot
+from discord.ext import commands
 
 import keepAlive
 
-BOT_PREFIX = ("fresh ")
+load_dotenv()
+
 TOKEN = os.getenv("token")
 
-client = Bot(command_prefix=BOT_PREFIX)
+bot = commands.Bot(command_prefix="fresh ")
 
-@client.event
+@bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('We have logged in as {0.user}'.format(bot))
 
-@client.command(name='hey',
+@bot.command()
+async def ping(context):
+	await context.channel.send("pong")
+
+@bot.command(name='hey',
                 description="Greets the bot.",
                 brief="Hey.",
                 pass_context=True)
-async def hi(context):
-    await client.say("Hello, " + context.message.author.mention)
+async def hey(context):
+    await context.channel.send("Heyo, " + context.message.author.mention)
 
-
-@client.command(name='referee',
-                description="Initializes a referee and starts a timer for the duel.",
-                brief="Summons the referee.",
-                aliases=['ref', 'rf'],
-                pass_context=True)
-async def referee(context):
-    refereeReplies = [
-        'I\'m still on development so... Not yet, no.',
-        'I\'m sorry, I know you need me but I have responsibilities too.',
-    ]
-    await client.say(context.message.author.mention + ", " + random.choice(refereeReplies))
-
-
-@client.command(name='8ball',
-                description="Sends your question out to space in hopes of receiving an answer.",
+@bot.command(name='8ball',
+                description="Sends your question out to space in hopes of receiving an answer.\n"
+                            + "Usage: eb 8ball [question]",
                 brief="Answers from the universe.",
                 aliases=['8b', 'eightball', '8-ball'],
                 pass_context=True)
-async def eightBall(context):
+async def eightBall(context, question):
     eightBallReplies = [
         'That is a resounding no',
         'It is not looking likely',
@@ -50,22 +43,36 @@ async def eightBall(context):
         'It is quite possible',
         'Definitely',
     ]
-    await client.say(random.choice(eightBallReplies) + ", " + context.message.author.mention)
+    await context.channel.send(random.choice(eightBallReplies) + ", " + context.message.author.mention)
 
+#@bot.command(name='referee',
+#                description="Initializes a referee and starts a timer for the duel.\n"
+#                            + "Usage: eb referee [@player]",
+#                brief="Summons the referee.",
+#                aliases=['ref', 'rf'],
+#                pass_context=True)
+#async def referee(context):
+#    refereeReplies = [
+#        'I\'m still on development so... Not yet, no.',
+#        'I\'m sorry, I know you need me but I have responsibilities too.',
+#    ]
+#    await context.channel.send(context.message.author.mention + ", " + random.choice(refereeReplies))
 
-@client.command()
-async def square(number):
+@bot.command()
+async def square(context, number):
     squared_value = int(number) * int(number)
-    await client.say(str(number) + " squared is " + str(squared_value))
+    await context.channel.send(str(number) + " squared is " + str(squared_value))
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
+@bot.event
+async def on_message(context):
+    if context.author == bot.user:
         return
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+    if context.content.startswith('$hello'):
+        await context.channel.send('Hello!')
+
+    await bot.process_commands(context)
 
 keepAlive.keepAlive()
 
-client.run(TOKEN)
+bot.run(TOKEN)
