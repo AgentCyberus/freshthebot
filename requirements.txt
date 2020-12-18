@@ -1,4 +1,0 @@
-discord.py==1.0.0a
-aiohttp
-websockets
-chardet
