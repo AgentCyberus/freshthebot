@@ -5,8 +5,10 @@ from dotenv import load_dotenv
 import discord
 from discord import Game
 from discord.ext import commands
+from discord.ext.commands import has_permissions, MissingPermissions, is_owner
 
 import keepAlive
+import currency
 
 load_dotenv()
 TOKEN = os.getenv("token")
@@ -84,4 +86,4 @@ async def on_message(context):
 
 keepAlive.keepAlive()
 
-bot.run(TOKEN)
+bot.run(TOKEN) 
