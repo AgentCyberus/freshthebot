@@ -9,41 +9,40 @@ from discord.ext import commands
 import keepAlive
 
 load_dotenv()
-
 TOKEN = os.getenv("token")
 
-bot = commands.Bot(command_prefix="fresh ")
+bot = commands.Bot(command_prefix="fresh, ")
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(bot))
+  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="fresh, help"))
+  print('We have logged in as {0.user}'.format(bot))
 
-@bot.command()
+@bot.command(description="Performs complex calulations to ensure that ping is definitely pong.",
+              brief="Pong")
 async def ping(context):
-	await context.channel.send("pong")
+	await context.channel.send("Pong")
 
 @bot.command(name='hey',
-                description="Greets the bot.",
-                brief="Hey.",
-                pass_context=True)
+                description="Greets the bot",
+                brief="Hey")
 async def hey(context):
-    await context.channel.send("Heyo, " + context.message.author.mention)
+  await context.channel.send("Heyo, " + context.author.mention)
 
 @bot.command(name='8ball',
-                description="Sends your question out to space in hopes of receiving an answer.\n"
-                            + "Usage: eb 8ball [question]",
-                brief="Answers from the universe.",
+                description="Sends your question out to space in hopes of receiving an answer.",
+                brief="Gives answers from the universe",
                 aliases=['8b', 'eightball', '8-ball'],
                 pass_context=True)
 async def eightBall(context, question):
-    eightBallReplies = [
-        'That is a resounding no',
-        'It is not looking likely',
-        'Too hard to tell',
-        'It is quite possible',
-        'Definitely',
-    ]
-    await context.channel.send(random.choice(eightBallReplies) + ", " + context.message.author.mention)
+  eightBallReplies = [
+      'That is a resounding no',
+      'It is not looking likely',
+      'Too hard to tell',
+      'It is quite possible',
+      'Definitely',
+  ]
+  await context.channel.send(random.choice(eightBallReplies) + ", " + context.message.author.mention)
 
 #@bot.command(name='referee',
 #                description="Initializes a referee and starts a timer for the duel.\n"
@@ -58,20 +57,30 @@ async def eightBall(context, question):
 #    ]
 #    await context.channel.send(context.message.author.mention + ", " + random.choice(refereeReplies))
 
-@bot.command()
-async def square(context, number):
-    squared_value = int(number) * int(number)
-    await context.channel.send(str(number) + " squared is " + str(squared_value))
+@bot.command(description="Borrows computing power from NASA's supercomputer to calculate the result of multiplying a number by itself.",
+                brief="Gives the square of a number",)
+async def square(context, number: int):
+  await context.channel.send(str(number) + " squared is " + str(number^2))
 
 @bot.event
 async def on_message(context):
-    if context.author == bot.user:
-        return
+  praiseReplies = [
+        'Thanks, boss!',
+        '*wags tail happily*',
+        "Okay, but where's my treat?",
+        'Aww, love you too.',
+        '*wags tail happily*',
+        '*wags tail happily*',
+        'Thanks, boss!',
+    ]
 
-    if context.content.startswith('$hello'):
-        await context.channel.send('Hello!')
+  if context.author == bot.user:
+    return
 
-    await bot.process_commands(context)
+  if context.content.startswith('good bot, fresh'):
+    await context.channel.send(random.choice(praiseReplies))
+
+  await bot.process_commands(context)
 
 keepAlive.keepAlive()
 
