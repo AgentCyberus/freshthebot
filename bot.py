@@ -3,17 +3,16 @@ import random
 import asyncio
 from dotenv import load_dotenv
 import discord
-from discord import Game
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions, is_owner
 
 import keepAlive
-import currency
 
 load_dotenv()
 TOKEN = os.getenv("token")
 
 bot = commands.Bot(command_prefix="fresh, ")
+bot.load_extension("cogs.nick")
 
 @bot.event
 async def on_ready():
@@ -32,10 +31,9 @@ async def hey(context):
   await context.channel.send("Heyo, " + context.author.mention)
 
 @bot.command(name='8ball',
-                description="Sends your question out to space in hopes of receiving an answer.",
-                brief="Gives answers from the universe",
-                aliases=['8b', 'eightball', '8-ball'],
-                pass_context=True)
+                description="Ask a yes/no question and I will  send it out to space in hopes of receiving an answer.",
+                brief="Ask a yes or no question",
+                aliases=['8b', 'eightball', '8-ball'])
 async def eightBall(context, question):
   eightBallReplies = [
       'That is a resounding no',
