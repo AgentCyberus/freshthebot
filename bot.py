@@ -24,6 +24,10 @@ async def on_ready():
 async def ping(context):
 	await context.channel.send("Pong")
 
+@bot.command()
+async def say(context, *, message):
+  await context.channel.send(message)
+
 @bot.command(name='hey',
                 description="Greets the bot",
                 brief="Hey")
@@ -34,7 +38,7 @@ async def hey(context):
                 description="Ask a yes/no question and I will  send it out to space in hopes of receiving an answer.",
                 brief="Ask a yes or no question",
                 aliases=['8b', 'eightball', '8-ball'])
-async def eightBall(context, question):
+async def eightBall(context, *, question):
   eightBallReplies = [
       'That is a resounding no',
       'It is not looking likely',
@@ -42,7 +46,23 @@ async def eightBall(context, question):
       'It is quite possible',
       'Definitely',
   ]
-  await context.channel.send(random.choice(eightBallReplies) + ", " + context.message.author.mention)
+
+  text = question.split()
+  print(text)
+
+  if "2021" in text:
+    if ("2020" in text and "part" in text and "2" in text) or ("2020" in text and "pt.2" in text) or ("2020" in text and "worse" in text) or ("2020" in text and "bad" in text):
+      await context.channel.send(eightBallReplies[4] + ", " + context.message.author.mention)
+    elif ("2020" in text and "better" in text):
+      await context.channel.send(eightBallReplies[0] + ", " + context.message.author.mention)
+    elif ("2020" in text and "good" in text):
+      await context.channel.send("What do you even mean by \"good\"?")
+    else:
+      await context.channel.send("You mean, 2020 pt.2?")
+  elif "or" in text and "yes" not in text and "no" not in text:
+    await context.channel.send("Sorry, I can only answer yes or no questions.")
+  else:
+    await context.channel.send(random.choice(eightBallReplies) + ", " + context.message.author.mention)
 
 #@bot.command(name='referee',
 #                description="Initializes a referee and starts a timer for the duel.\n"
@@ -74,6 +94,9 @@ async def on_message(context):
         'Thanks, boss!',
     ]
 
+  text = context.content.split()
+  #print(text)
+
   if context.author == bot.user:
     return
 
@@ -81,6 +104,7 @@ async def on_message(context):
     await context.channel.send(random.choice(praiseReplies))
 
   await bot.process_commands(context)
+
 
 keepAlive.keepAlive()
 
